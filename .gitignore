@@ -1,0 +1,16 @@
+# IDE Settings
+.vscode/
+.idea/
+.zed/
+
+# Dependencies
+node_modules/
+
+# Miscellaneous
+.next/
+build/
+out/
+.DS_Store
+.env
+.vercel
+next-env.d.ts
