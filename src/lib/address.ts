@@ -1,7 +1,7 @@
 import {Client} from "@notionhq/client";
 import {TableRowBlockObjectResponse} from "@notionhq/client/build/src/api-endpoints";
 
-type Address = string;
+export type Address = string;
 
 type IAddressServiceResponse = {
   addresses: Address[];
@@ -51,18 +51,18 @@ class AddressService implements IAddressService {
       throw new Error("blockId is missing")
     }
 
-    const { results, has_more: hasMore, next_cursor: nextCursor } = await this.client.blocks.children.list({ block_id: blockId, page_size: this.pageSize, start_cursor: this.cursor })
-
-    this.hasMore = hasMore;
-    if (hasMore && nextCursor) {
-      this.cursor = nextCursor;
-    }
+    const { results, has_more: hasMore, next_cursor: nextCursor } = await this.client.blocks.children.list({ block_id: blockId, page_size: this.pageSize + 1, start_cursor: this.cursor })
 
     const newAddresses = results
+      .slice(this.cursor ? 0 : 1)
       .filter(isTableRow)
       .map((entry) => entry.table_row.cells.flat()[0].plain_text);
 
     this.addresses.push(...newAddresses);
+    this.hasMore = hasMore;
+    if (hasMore && nextCursor) {
+      this.cursor = nextCursor;
+    }
 
     return { addresses: this.addresses, newAddresses, hasMore }
   }
