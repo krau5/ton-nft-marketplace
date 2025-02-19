@@ -36,7 +36,9 @@ const ImageContainer = ({ src, previewSrc, alt }: ImageContainerProps) => {
   }, []);
 
   const handleError = useCallback(() => {
-    if (currentSrc !== previewSrc) setCurrentSrc(previewSrc);
+    if (currentSrc !== previewSrc) {
+      setCurrentSrc(previewSrc);
+    }
   }, [currentSrc, previewSrc]);
 
   useEffect(() => {
@@ -44,6 +46,7 @@ const ImageContainer = ({ src, previewSrc, alt }: ImageContainerProps) => {
       const timer = setTimeout(() => {
         setCurrentSrc(previewSrc);
       }, 5000);
+
       return () => clearTimeout(timer);
     }
   }, [loaded, currentSrc, src, previewSrc]);
