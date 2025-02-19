@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ReactNode } from 'react';
+import { Providers } from './providers';
+import { Header } from '@/components/Header';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -19,16 +21,13 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.variable} antialiased`}
-      >
-        <header className="bg-white shadow py-6 px-4 sticky top-0 z-10">
-          <h1 className="text-3xl text-center font-bold text-gray-900">TON NFT Marketplace</h1>
-        </header>
-
-        {children}
-      </body>
-    </html>
+    <Providers>
+      <html lang="en">
+        <body className={`${inter.variable} antialiased`}>
+          <Header />
+          {children}
+        </body>
+      </html>
+    </Providers>
   );
 }

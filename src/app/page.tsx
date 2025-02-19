@@ -2,12 +2,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { NftGallery } from '@/components/NftGallery';
 import { NftMetadata } from '@/lib';
+import { redirect } from 'next/navigation';
+import { useIsAuthenticated } from '@/hooks';
 
 export default function Home() {
   const [nfts, setNfts] = useState<NftMetadata[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
+
+  const { isConnectionRestored, isAuthenticated } = useIsAuthenticated();
 
   const fetchNFTs = useCallback(async (cursorParam?: string | null) => {
     setLoading(true);
@@ -27,6 +31,16 @@ export default function Home() {
   useEffect(() => {
     fetchNFTs(null);
   }, [fetchNFTs]);
+
+  useEffect(() => {
+    if (isConnectionRestored && !isAuthenticated) {
+      redirect('/login');
+    }
+  }, [isConnectionRestored, isAuthenticated]);
+
+  if (!isConnectionRestored) {
+    return null;
+  }
 
   return (
     <>
