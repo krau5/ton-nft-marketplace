@@ -1,17 +1,17 @@
 import {Client} from "@notionhq/client";
 import {TableRowBlockObjectResponse} from "@notionhq/client/build/src/api-endpoints";
 
-export type Address = string;
+export type NftAddress = string;
 
-type IAddressServiceResponse = {
-  addresses: Address[];
-  newAddresses: Address[];
+type NftAddressServiceResponse = {
+  addresses: NftAddress[];
+  newAddresses: NftAddress[];
   hasMore: boolean;
 }
 
-interface IAddressService {
-  fetch: (blockId?: string) => Promise<IAddressServiceResponse>
-  get: () => Address[]
+interface INftAddressService {
+  fetch: (blockId?: string) => Promise<NftAddressServiceResponse>
+  get: () => NftAddress[]
 }
 
 const isTableRow = (value: unknown): value is TableRowBlockObjectResponse =>
@@ -19,9 +19,9 @@ const isTableRow = (value: unknown): value is TableRowBlockObjectResponse =>
     value && typeof value === 'object' && 'type' in value && value['type'] === 'table_row'
   )
 
-class AddressService implements IAddressService {
+class NftAddressService implements INftAddressService {
   private readonly client: Client;
-  private readonly addresses: Address[];
+  private readonly addresses: NftAddress[];
 
   private cursor?: string;
   private hasMore: boolean = true;
@@ -71,9 +71,9 @@ class AddressService implements IAddressService {
    * Retrieves all fetched addresses.
    * @returns An array of addresses.
    */
-  get(): Address[] {
+  get(): NftAddress[] {
     return this.addresses
   }
 }
 
-export const addressService = new AddressService(process.env.NOTION_TOKEN);
+export const nftAddressService = new NftAddressService(process.env.NOTION_TOKEN);
