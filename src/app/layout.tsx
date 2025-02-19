@@ -28,10 +28,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold text-gray-900">TON NFT Marketplace</h1>
-          </div>
+        <header className="bg-white shadow py-6 px-4 sticky top-0 z-10">
+          <h1 className="text-3xl text-center font-bold text-gray-900">TON NFT Marketplace</h1>
         </header>
 
         {children}
