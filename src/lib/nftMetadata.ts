@@ -2,16 +2,17 @@ import { NftAddress } from '@/lib/nftAddress';
 import { NftItem, TonApiClient } from '@ton-api/client';
 import { Address } from '@ton/core';
 
-type NftMetadata = {
+export type NftMetadata = {
   address: string;
   rawAddress: string;
   ownerAddress: string;
   image: string;
+  preview: string;
   name: string;
   description: string;
 }
 
-type NftMetadataMap = Record<NftAddress, NftMetadata>;
+export type NftMetadataMap = Record<NftAddress, NftMetadata>;
 
 interface INftMetadataService {
   /**
@@ -22,7 +23,7 @@ interface INftMetadataService {
   fetchByAddresses: (addresses: NftAddress[]) => Promise<NftMetadataMap>;
 }
 
-class NftMetadataService implements INftMetadataService {
+export class NftMetadataService implements INftMetadataService {
   private client: TonApiClient;
 
   constructor(apiKey?: string) {
@@ -40,6 +41,10 @@ class NftMetadataService implements INftMetadataService {
    */
   async fetchByAddresses(addresses: NftAddress[]) {
     const parsedAddresses = this.parseAddresses(addresses);
+    if (parsedAddresses.length === 0) {
+      return {};
+    }
+
     const { nftItems } = await this.client.nft.getNftItemsByAddresses({ accountIds: parsedAddresses });
 
     return this.mapItemsToMetadata(nftItems, addresses);
@@ -90,10 +95,9 @@ class NftMetadataService implements INftMetadataService {
       rawAddress: data.address.toRawString(),
       ownerAddress: data.owner?.address.toString() ?? '',
       image: data.metadata.image,
+      preview: data.previews?.find(preview => preview.resolution==='1500x1500')?.url ?? '',
       name: data.metadata.name,
       description: data.metadata.description,
     };
   }
 }
-
-export const nftMetadataService = new NftMetadataService(process.env.TON_API_KEY);
