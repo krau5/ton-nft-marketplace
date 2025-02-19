@@ -42,13 +42,15 @@ const ImageContainer = ({ src, previewSrc, alt }: ImageContainerProps) => {
   }, [currentSrc, previewSrc]);
 
   useEffect(() => {
-    if (!loaded && currentSrc === src) {
-      const timer = setTimeout(() => {
-        setCurrentSrc(previewSrc);
-      }, 5000);
-
-      return () => clearTimeout(timer);
+    if (loaded || currentSrc !== src) {
+      return;
     }
+
+    const timer = setTimeout(() => {
+      setCurrentSrc(previewSrc);
+    }, 5000);
+
+    return () => clearTimeout(timer);
   }, [loaded, currentSrc, src, previewSrc]);
 
   return (
@@ -61,6 +63,7 @@ const ImageContainer = ({ src, previewSrc, alt }: ImageContainerProps) => {
         className="block w-full h-auto object-cover"
         width={dimensions.width}
         height={dimensions.height}
+        priority
       />
     </div>
   );

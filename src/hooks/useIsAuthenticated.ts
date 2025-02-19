@@ -5,5 +5,5 @@ export const useIsAuthenticated = () => {
   const isConnectionRestored = useIsConnectionRestored();
   const [tonConnectUI] = useTonConnectUI();
 
-  return { isConnectionRestored, isAuthenticated: tonConnectUI.connected  };
+  return { isConnectionRestored, isAuthenticated: tonConnectUI?.connected ?? false  };
 };
