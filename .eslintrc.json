@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
+  "rules": {
+    "eol-last": ["error", "always"],
+    "linebreak-style": ["error", "unix"],
+    "no-multiple-empty-lines": ["error", {
+      "max": 1
+    }],
+    "object-curly-spacing": ["error", "always"],
+    "semi": ["error", "always"],
+    "quotes": ["error", "single", {
+      "avoidEscape": true
+    }]
+  }
+}

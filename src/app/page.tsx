@@ -1,9 +1,22 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NftGallery } from '@/components/NftGallery';
 import { NftMetadata } from '@/lib';
+import { redirect } from 'next/navigation';
+import { useIsAuthenticated } from '@/hooks';
 
-export default function Home() {
+interface FetchNFTsResponse {
+  items: NftMetadata[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+type LoadMoreButtonProps = {
+  loading: boolean;
+  onClick: () => void;
+}
+
+const useGetData = () => {
   const [nfts, setNfts] = useState<NftMetadata[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
@@ -11,16 +24,27 @@ export default function Home() {
 
   const fetchNFTs = useCallback(async (cursorParam?: string | null) => {
     setLoading(true);
-    const url = cursorParam ? `/api/nfts?cursor=${cursorParam}` : '/api/nfts';
-    const res = await fetch(url);
-    const data = await res.json();
-    setNfts((prev) => [...prev, ...data.items]);
-    setCursor(data.nextCursor || null);
-    setHasMore(data.hasMore);
-    setLoading(false);
+
+    try {
+      const url = new URL('/api/nfts', window.location.origin);
+      if (cursorParam) {
+        url.searchParams.set('cursor', cursorParam);
+      }
+
+      const res = await fetch(url.toString());
+      const data: FetchNFTsResponse = await res.json();
+
+      setNfts(prev => [...prev, ...data.items]);
+      setCursor(data.nextCursor);
+      setHasMore(data.hasMore);
+    } catch (error) {
+      console.error('Failed to fetch NFTs:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const handleClick = useCallback(() => {
+  const loadMore = useCallback(() => {
     fetchNFTs(cursor);
   }, [cursor, fetchNFTs]);
 
@@ -28,21 +52,47 @@ export default function Home() {
     fetchNFTs(null);
   }, [fetchNFTs]);
 
+  return {
+    nfts,
+    hasMore,
+    loading,
+    loadMore,
+  };
+};
+
+const LoadMoreButton = ({
+  loading,
+  onClick
+}: LoadMoreButtonProps) => (
+  <div className="w-full flex items-center justify-center mb-4">
+    <button
+      onClick={onClick}
+      disabled={loading}
+      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+    >
+      {loading ? 'Loading...' : 'Load More'}
+    </button>
+  </div>
+);
+
+export default function Home() {
+  const { isConnectionRestored, isAuthenticated } = useIsAuthenticated();
+  const { nfts, hasMore, loading, loadMore } = useGetData();
+
+  useEffect(() => {
+    if (isConnectionRestored && !isAuthenticated) {
+      redirect('/login');
+    }
+  }, [isConnectionRestored, isAuthenticated]);
+
+  if (!isConnectionRestored) {
+    return null;
+  }
+
   return (
     <>
       <NftGallery items={nfts} />
-
-      {hasMore && (
-        <div className="w-full flex items-center justify-center mb-4">
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
-            onClick={handleClick}
-            disabled={loading}
-          >
-            {loading ? 'Loading...' : 'Load More'}
-          </button>
-        </div>
-      )}
+      {hasMore && <LoadMoreButton loading={loading} onClick={loadMore} />}
     </>
   );
 }

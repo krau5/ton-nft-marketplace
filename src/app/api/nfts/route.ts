@@ -10,6 +10,7 @@ const nftMetadataService = new NftMetadataService(tonapiAuth);
 
 export async function GET(request: Request) {
   try {
+    console.log('request');
     const { searchParams } = new URL(request.url);
     const cursor = searchParams.get('cursor') || undefined;
 
@@ -30,3 +31,5 @@ export async function GET(request: Request) {
     );
   }
 }
+
+export const revalidate = 600;
