@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import type { NftMetadata } from '@/lib/nftMetadata';
-import { SyntheticEvent, useCallback, useState } from 'react';
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react';
 
 type NftCardProps = {
   data: NftMetadata;
@@ -12,30 +12,52 @@ type AddressRowProps = {
   value: string;
 };
 
+type ImageContainerProps = {
+  src: string;
+  previewSrc: string;
+  alt: string;
+}
+
 const AddressRow = ({ label, value }: AddressRowProps) => (
   <p className="truncate">
     <span className="font-semibold">{label}:</span> {value}
   </p>
 );
 
-const ImageContainer = ({ src, alt }: { src: string; alt: string }) => {
+const ImageContainer = ({ src, previewSrc, alt }: ImageContainerProps) => {
+  const [currentSrc, setCurrentSrc] = useState(src);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [loaded, setLoaded] = useState(false);
 
-  const handleLoad = useCallback((event: SyntheticEvent<HTMLImageElement>) => {
-    const { width, height } = event.currentTarget.getBoundingClientRect();
+  const handleLoad = useCallback((e: SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget.getBoundingClientRect();
     setDimensions({ width, height });
+    setLoaded(true);
   }, []);
+
+  const handleError = useCallback(() => {
+    if (currentSrc !== previewSrc) setCurrentSrc(previewSrc);
+  }, [currentSrc, previewSrc]);
+
+  useEffect(() => {
+    if (!loaded && currentSrc === src) {
+      const timer = setTimeout(() => {
+        setCurrentSrc(previewSrc);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [loaded, currentSrc, src, previewSrc]);
 
   return (
     <div className="relative w-full">
       <Image
-        src={src}
+        src={currentSrc}
         alt={alt}
-        className="w-full h-auto"
+        onLoad={handleLoad}
+        onError={handleError}
+        className="block w-full h-auto object-cover"
         width={dimensions.width}
         height={dimensions.height}
-        onLoad={handleLoad}
-        priority
       />
     </div>
   );
@@ -50,7 +72,7 @@ export const NftCard = ({ data }: NftCardProps) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden w-full">
-      <ImageContainer src={data.image} alt={data.name} />
+      <ImageContainer src={data.image} previewSrc={data.preview} alt={data.name} />
       <div className="p-4">
         <h2 className="text-xl font-semibold mb-2">{data.name}</h2>
         <p className="text-gray-600 mb-4">{data.description}</p>
