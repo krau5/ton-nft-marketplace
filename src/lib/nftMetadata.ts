@@ -1,6 +1,6 @@
-import {NftAddress} from "@/lib/nftAddress";
-import {NftItem, TonApiClient} from "@ton-api/client";
-import {Address} from "@ton/core";
+import { NftAddress } from '@/lib/nftAddress';
+import { NftItem, TonApiClient } from '@ton-api/client';
+import { Address } from '@ton/core';
 
 type NftMetadata = {
   address: string;
@@ -27,7 +27,7 @@ class NftMetadataService implements INftMetadataService {
 
   constructor(apiKey?: string) {
     if (!apiKey) {
-      throw new Error("apiKey is missing");
+      throw new Error('apiKey is missing');
     }
 
     this.client = new TonApiClient({ baseUrl: 'https://tonapi.io', apiKey });
@@ -40,7 +40,7 @@ class NftMetadataService implements INftMetadataService {
    */
   async fetchByAddresses(addresses: NftAddress[]) {
     const parsedAddresses = this.parseAddresses(addresses);
-    const {nftItems} = await this.client.nft.getNftItemsByAddresses({ accountIds: parsedAddresses })
+    const { nftItems } = await this.client.nft.getNftItemsByAddresses({ accountIds: parsedAddresses });
 
     return this.mapItemsToMetadata(nftItems, addresses);
   }
@@ -54,13 +54,13 @@ class NftMetadataService implements INftMetadataService {
     return addresses.reduce<Address[]>((acc, value) => {
       try {
         const address = Address.parse(value);
-        acc.push(address)
-        return acc
+        acc.push(address);
+        return acc;
       } catch (e) {
         console.error(`failed to parse address: ${e}`);
-        return acc
+        return acc;
       }
-    }, [])
+    }, []);
   }
 
   /**
@@ -76,7 +76,7 @@ class NftMetadataService implements INftMetadataService {
         acc[metadata.address] = metadata;
       }
       return acc;
-    }, {})
+    }, {});
   }
 
   /**
@@ -92,8 +92,8 @@ class NftMetadataService implements INftMetadataService {
       image: data.metadata.image,
       name: data.metadata.name,
       description: data.metadata.description,
-    }
+    };
   }
 }
 
-export const nftMetadataService = new NftMetadataService(process.env.TON_API_KEY)
+export const nftMetadataService = new NftMetadataService(process.env.TON_API_KEY);
