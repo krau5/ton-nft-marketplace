@@ -1,5 +1,5 @@
-import {Client} from "@notionhq/client";
-import {TableRowBlockObjectResponse} from "@notionhq/client/build/src/api-endpoints";
+import { Client } from '@notionhq/client';
+import { TableRowBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 export type NftAddress = string;
 
@@ -17,7 +17,7 @@ interface INftAddressService {
 const isTableRow = (value: unknown): value is TableRowBlockObjectResponse =>
   Boolean(
     value && typeof value === 'object' && 'type' in value && value['type'] === 'table_row'
-  )
+  );
 
 class NftAddressService implements INftAddressService {
   private readonly client: Client;
@@ -29,12 +29,12 @@ class NftAddressService implements INftAddressService {
 
   constructor(auth?: string, pageSize: number = 1) {
     if (!auth) {
-      throw new Error("auth token is missing")
+      throw new Error('auth token is missing');
     }
 
-    this.client = new Client({ auth })
+    this.client = new Client({ auth });
     this.addresses = [];
-    this.pageSize = pageSize
+    this.pageSize = pageSize;
   }
 
   /**
@@ -48,10 +48,10 @@ class NftAddressService implements INftAddressService {
     }
 
     if (!blockId) {
-      throw new Error("blockId is missing")
+      throw new Error('blockId is missing');
     }
 
-    const { results, has_more: hasMore, next_cursor: nextCursor } = await this.client.blocks.children.list({ block_id: blockId, page_size: this.pageSize + 1, start_cursor: this.cursor })
+    const { results, has_more: hasMore, next_cursor: nextCursor } = await this.client.blocks.children.list({ block_id: blockId, page_size: this.pageSize + 1, start_cursor: this.cursor });
 
     const newAddresses = results
       .slice(this.cursor ? 0 : 1)
@@ -64,7 +64,7 @@ class NftAddressService implements INftAddressService {
       this.cursor = nextCursor;
     }
 
-    return { addresses: this.addresses, newAddresses, hasMore }
+    return { addresses: this.addresses, newAddresses, hasMore };
   }
 
   /**
@@ -72,7 +72,7 @@ class NftAddressService implements INftAddressService {
    * @returns An array of addresses.
    */
   get(): NftAddress[] {
-    return this.addresses
+    return this.addresses;
   }
 }
 
