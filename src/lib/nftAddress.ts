@@ -52,13 +52,15 @@ export class NftAddressService implements INftAddressService {
         start_cursor: cursor,
       });
 
-    const addresses = results.filter(isTableRow).map((entry) =>
+    let addresses: NftAddress[] = results.filter(isTableRow).map((entry) =>
       entry.table_row.cells.flat()[0].plain_text
     );
 
     if (!cursor && addresses.length !== 0) {
       addresses.shift();
     }
+
+    addresses = [...new Set(addresses)];
 
     return { addresses, hasMore, nextCursor };
   }

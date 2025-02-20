@@ -1,6 +1,6 @@
-import { NftAddress } from '@/lib/nftAddress';
 import { NftItem, TonApiClient } from '@ton-api/client';
 import { Address } from '@ton/core';
+import { NftAddress } from './nftAddress';
 
 export type NftMetadata = {
   address: string;
@@ -75,10 +75,14 @@ export class NftMetadataService implements INftMetadataService {
    * @returns Map of addresses to formatted metadata
    */
   private mapItemsToMetadata(items: NftItem[], addresses: NftAddress[]): NftMetadataMap {
-    return items.reduce<NftMetadataMap>((acc, item) => {
+    const itemMap = new Map(items.map((item) => {
       const metadata = this.formatMetadata(item);
-      if (addresses.includes(metadata.address)) {
-        acc[metadata.address] = metadata;
+      return [metadata.address, metadata];
+    }));
+
+    return addresses.reduce<NftMetadataMap>((acc, address) => {
+      if (itemMap.has(address)) {
+        acc[address] = itemMap.get(address)!;
       }
       return acc;
     }, {});

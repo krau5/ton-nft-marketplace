@@ -1,4 +1,4 @@
-import { NftMetadata } from '@/lib/nftMetadata';
+import { NftMetadata } from '@/lib';
 import { NftCard } from './NftCard';
 
 type Props = {
