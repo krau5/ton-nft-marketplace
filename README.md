@@ -1,4 +1,4 @@
-This repository contains a Telegram Mini App built with Next.js that allows authorized users to view a list of NFT items.
+Telegram Mini App built with Next.js that allows authorized users to view a list of NFT items.
 
 ### Features and Technology Stack
 - Next.js v14 and React v18
