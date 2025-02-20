@@ -1,9 +1,11 @@
 'use client';
-import { useIsConnectionRestored, useTonConnectUI } from '@tonconnect/ui-react';
+import { useIsConnectionRestored, useTonWallet } from '@tonconnect/ui-react';
 
 export const useIsAuthenticated = () => {
   const isConnectionRestored = useIsConnectionRestored();
-  const [tonConnectUI] = useTonConnectUI();
+  const wallet = useTonWallet();
 
-  return { isConnectionRestored, isAuthenticated: tonConnectUI?.connected ?? false  };
+  console.log(isConnectionRestored, wallet !== null);
+
+  return { isConnectionRestored, isAuthenticated: wallet !== null  };
 };

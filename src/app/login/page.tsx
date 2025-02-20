@@ -1,6 +1,6 @@
 'use client';
 import { TonConnectButton } from '@tonconnect/ui-react';
-import { useIsAuthenticated } from '@/hooks/useIsAuthenticated';
+import { useIsAuthenticated } from '@/hooks';
 import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 
