@@ -25,7 +25,7 @@ export class NftAddressService implements INftAddressService {
   private readonly client: Client;
   private readonly pageSize: number;
 
-  constructor(auth?: string, pageSize: number = 1) {
+  constructor(auth?: string, pageSize: number = 5) {
     if (!auth) {
       throw new Error('auth token is missing');
     }
