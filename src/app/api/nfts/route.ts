@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { NftAddressService, NftMetadataService } from '@/lib';
 
-const blockId = process.env.NFT_TABLE_NODE;
+const blockId = process.env.NOTION_NFT_TABLE_ID;
 const notionAuth = process.env.NOTION_TOKEN;
 const tonapiAuth = process.env.TON_API_KEY;
 
