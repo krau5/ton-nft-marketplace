@@ -83,7 +83,7 @@ export default function Home() {
     if (isConnectionRestored && !isAuthenticated) {
       redirect('/login');
     }
-  }, [isConnectionRestored, isAuthenticated]);
+  }, [isAuthenticated, isConnectionRestored]);
 
   if (!isConnectionRestored) {
     return null;
