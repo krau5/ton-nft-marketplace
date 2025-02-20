@@ -1,6 +1,6 @@
-import { NftAddress } from '@/lib/nftAddress';
 import { NftItem, TonApiClient } from '@ton-api/client';
 import { Address } from '@ton/core';
+import { NftAddress } from './nftAddress';
 
 export type NftMetadata = {
   address: string;

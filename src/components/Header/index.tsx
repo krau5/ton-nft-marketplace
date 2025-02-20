@@ -1,6 +1,5 @@
 'use client';
-
-import { TonConnectButton } from '@/components/TonConnectButton';
+import { TonConnectButton } from '@tonconnect/ui-react';
 import { usePathname } from 'next/navigation';
 
 export const Header = () => {
