@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This repository contains a Telegram Mini App built with Next.js that allows authorized users to view a list of NFT items.
+
+### Features and Technology Stack
+- Next.js v14 and React v18
+- TonConnect for authorization
+- Notion Integrations as a main data source
+- Ton API to retrieve the data from blockchain
+- Tailwind for styling
+- Vercel for deployment
+
+You can find the deployed service following this [link](https://ton-nft-marketplace-tau.vercel.app).
 
 ## Getting Started
 
-First, run the development server:
+Clone the repository, install dependencies, and copy the `.env.example` contents to `.env`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+~ git clone git@github.com:krau5/ton-nft-marketplace.git
+~ cd ton-nft-marketplace
+~ npm i
+~ cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Setting up environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To configure the `.env` file, you need data from Notion and Tonconsole.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### Notion configuration
 
-## Learn More
+1. Open your [Notion Integrations](https://www.notion.so/profile/integrations), create an internal integration, and copy the **Internal Integration Secret** to the `NOTION_TOKEN` field in `.env`.
+2. Connect your integration to the Notion page containing the NFT table.
+   ![Integration Setup](assets/img_1.png)
+3. Copy the link to the table node on your page.
+   ![Table Node](assets/img_2.png)
+4. Extract the table ID from the URL (the part after `#`) and paste it into the `NOTION_NFT_TABLE_ID` field in `.env`.
 
-To learn more about Next.js, take a look at the following resources:
+Example Notion URL:
+```
+https://www.notion.so/user/demo-page-19ea6efae12345719034d4e310fa4964?pvs=4#19ea6efae5568056a6deec39479f3d25
+```
+Extracted `NOTION_NFT_TABLE_ID`:
+```
+19ea6efae5568056a6deec39479f3d25
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### TON API Configuration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Open [Tonconsole](https://tonconsole.com/tonapi/api-keys) and create an API key.
+2. Copy and paste it into the `TON_API_KEY` field in `.env`.
 
-## Deploy on Vercel
+Once environment variables are set up, you can start the application with:
+```bash
+~ npm run dev
+```
+The app will be available at `http://localhost:3000/`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - launches the application in development mode
+- `npm run build` - builds the application
+- `npm start` - runs the production build
+- `npm run lint` - checks code quality using ESLint
+- `npm run lint:fix` - fixes linting issues if possible
+- `npm run check-types` - launches type checking process using TS compiler
