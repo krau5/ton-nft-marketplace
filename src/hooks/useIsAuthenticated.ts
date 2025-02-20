@@ -5,7 +5,5 @@ export const useIsAuthenticated = () => {
   const isConnectionRestored = useIsConnectionRestored();
   const wallet = useTonWallet();
 
-  console.log(isConnectionRestored, wallet !== null);
-
   return { isConnectionRestored, isAuthenticated: wallet !== null  };
 };
