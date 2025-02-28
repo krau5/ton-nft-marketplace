@@ -11,9 +11,17 @@ type AddressRowProps = {
   value: string;
 };
 
+const formatAddress = (value: string): string => {
+  if (value.length <= 7) {
+    return value;
+  }
+
+  return `${value.slice(0, 4)}...${value.slice(-4)}`;
+};
+
 const AddressRow = ({ label, value }: AddressRowProps) => (
   <p className="truncate">
-    <span className="font-semibold">{label}:</span> {value}
+    <span className="font-semibold">{label}:</span> {formatAddress(value)}
   </p>
 );
 
