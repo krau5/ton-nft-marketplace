@@ -2,7 +2,7 @@
 import { PropsWithChildren } from 'react';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 
-const manifestUrl = 'https://api.jsonserve.com/HI1fYg';
+const manifestUrl = 'https://pastebin.com/raw/V3Dd53y3';
 
 export function Providers({  children }: PropsWithChildren) {
   return (
