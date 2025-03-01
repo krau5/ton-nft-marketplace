@@ -1,32 +1,21 @@
 'use client';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { NftGallery } from '@/components/NftGallery';
 import { redirect } from 'next/navigation';
-import { useFetchNfts, useIsAuthenticated } from '@/hooks';
-
-type LoadMoreButtonProps = {
-  loading: boolean;
-  onClick: () => void;
-}
-
-const LoadMoreButton = ({
-  loading,
-  onClick
-}: LoadMoreButtonProps) => (
-  <div className="w-full flex items-center justify-center mb-4">
-    <button
-      onClick={onClick}
-      disabled={loading}
-      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
-    >
-      {loading ? 'Loading...' : 'Load More'}
-    </button>
-  </div>
-);
+import { useFetchNfts, useIsAuthenticated, useScrollEnd } from '@/hooks';
+import { Loader } from '@/components/Loader';
 
 export default function Home() {
   const { isConnectionRestored, isAuthenticated } = useIsAuthenticated();
   const { nfts, hasMore, loading, loadMore } = useFetchNfts();
+
+  const handleScrollEnd = useCallback(() => {
+    if (hasMore && !loading) {
+      loadMore();
+    }
+  }, [hasMore, loadMore, loading]);
+
+  useScrollEnd(handleScrollEnd);
 
   useEffect(() => {
     if (isConnectionRestored && !isAuthenticated) {
@@ -41,7 +30,12 @@ export default function Home() {
   return (
     <>
       <NftGallery items={nfts} />
-      {hasMore && <LoadMoreButton loading={loading} onClick={loadMore} />}
+
+      {loading && (
+        <div className="flex justify-center items-center w-full mb-6">
+          <Loader />
+        </div>
+      )}
     </>
   );
 }
