@@ -1,64 +1,13 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { NftGallery } from '@/components/NftGallery';
-import { NftMetadata } from '@/lib';
 import { redirect } from 'next/navigation';
-import { useIsAuthenticated } from '@/hooks';
-
-interface FetchNFTsResponse {
-  items: NftMetadata[];
-  nextCursor: string | null;
-  hasMore: boolean;
-}
+import { useFetchNfts, useIsAuthenticated } from '@/hooks';
 
 type LoadMoreButtonProps = {
   loading: boolean;
   onClick: () => void;
 }
-
-const useGetData = () => {
-  const [nfts, setNfts] = useState<NftMetadata[]>([]);
-  const [cursor, setCursor] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(true);
-
-  const fetchNFTs = useCallback(async (cursorParam?: string | null) => {
-    setLoading(true);
-
-    try {
-      const url = new URL('/api/nfts', window.location.origin);
-      if (cursorParam) {
-        url.searchParams.set('cursor', cursorParam);
-      }
-
-      const res = await fetch(url.toString());
-      const data: FetchNFTsResponse = await res.json();
-
-      setNfts(prev => [...prev, ...data.items]);
-      setCursor(data.nextCursor);
-      setHasMore(data.hasMore);
-    } catch (error) {
-      console.error('Failed to fetch NFTs:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const loadMore = useCallback(() => {
-    fetchNFTs(cursor);
-  }, [cursor, fetchNFTs]);
-
-  useEffect(() => {
-    fetchNFTs(null);
-  }, [fetchNFTs]);
-
-  return {
-    nfts,
-    hasMore,
-    loading,
-    loadMore,
-  };
-};
 
 const LoadMoreButton = ({
   loading,
@@ -77,7 +26,7 @@ const LoadMoreButton = ({
 
 export default function Home() {
   const { isConnectionRestored, isAuthenticated } = useIsAuthenticated();
-  const { nfts, hasMore, loading, loadMore } = useGetData();
+  const { nfts, hasMore, loading, loadMore } = useFetchNfts();
 
   useEffect(() => {
     if (isConnectionRestored && !isAuthenticated) {

@@ -40,12 +40,20 @@ export const ImageContainer = ({ src, previewSrc, alt }: ImageContainerProps) =>
   }, [currentSrc, previewSrc]);
 
   useEffect(() => {
-    if (loaded || currentSrc !== src) {
+    if (loaded || currentSrc === '') {
       return;
     }
 
     const timer = setTimeout(() => {
-      setCurrentSrc(previewSrc);
+      if (currentSrc === previewSrc || previewSrc === '') {
+        setCurrentSrc('');
+        return;
+      }
+
+      if (currentSrc !== previewSrc) {
+        setCurrentSrc(previewSrc);
+        return;
+      }
     }, 5000);
 
     return () => clearTimeout(timer);
