@@ -26,7 +26,12 @@ export const useFetchNfts = () => {
       const res = await fetch(url.toString());
       const data: FetchNFTsResponse = await res.json();
 
-      setNfts((prevNfts) => [...prevNfts, ...data.items]);
+      setNfts((prevNfts) => {
+        const allNfts = [...prevNfts, ...data.items];
+
+        return [...new Set(allNfts)];
+      });
+
       setCursor(data.nextCursor);
       setHasMore(data.hasMore);
     } catch (error) {
